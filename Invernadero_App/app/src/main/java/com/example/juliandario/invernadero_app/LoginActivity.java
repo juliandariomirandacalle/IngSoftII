@@ -13,8 +13,8 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText edTxtVwUsuario, edTxtVwPassword;
     Button btnLogin;
-    String usuarioAdmin = "admin", passAdmin = "passAdmin";
-    String usuarioOperario = "op", passOperario = "passOp";
+    String usuarioAdmin = "admin", passAdmin = "passadmin";
+    String usuarioOperario = "op", passOperario = "passop";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
