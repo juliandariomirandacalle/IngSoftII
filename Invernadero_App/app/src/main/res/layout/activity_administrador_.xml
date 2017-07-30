@@ -23,113 +23,124 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="25">
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:text="Insumo: "
-                android:textAlignment="center"
                 android:fontFamily="casual"
                 android:textSize="18sp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_weight="0.25"/>
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="Proveedor: "
-                android:textAlignment="center"
-                android:fontFamily="casual"
-                android:textSize="18sp"
-                android:layout_marginBottom="10dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="Fecha: "
-                android:textAlignment="center"
-                android:fontFamily="casual"
-                android:textSize="18sp"
-                android:layout_marginBottom="10dp"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:text="Cantidad: "
-                android:textAlignment="center"
-                android:fontFamily="casual"
-                android:textSize="18sp"/>
-
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_file"
+                android:layout_weight="0.75">
+                <Spinner
+                    android:id="@+id/spinner_insumo_admin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAlignment="center"
+                    android:fontFamily="casual"
+                    android:textSize="18sp">
+                </Spinner>
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="75">
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_marginBottom="10dp">
 
-            <Spinner
-                android:id="@+id/spinner_insumo_admin"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:textAlignment="center"
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Proveedores: "
                 android:fontFamily="casual"
                 android:textSize="18sp"
-                android:layout_marginBottom="10dp">
-            </Spinner>
-
-            <Spinner
-                android:id="@+id/spinner_proveedores_admin"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:textAlignment="center"
-                android:fontFamily="casual"
-                android:textSize="18sp"
-                android:layout_marginBottom="10dp">
-            </Spinner>
-
-            <EditText
-                android:id="@+id/spinner_fecha_admin"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:textAlignment="center"
-                android:fontFamily="casual"
-                android:textSize="18sp"
-                android:layout_marginBottom="10dp">
-            </EditText>
+                android:layout_weight="0.1"/>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="100">
-
-                <EditText
-                    android:id="@+id/spinner_cantidad_admin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp"
+                android:background="@drawable/border_file"
+                android:layout_weight="0.9">
+                <Spinner
+                    android:id="@+id/spinner_proveedores_admin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:fontFamily="casual"
-                    android:textSize="18sp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_weight="90">
-                </EditText>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:text="Kg"
-                    android:textAlignment="center"
-                    android:fontFamily="casual"
-                    android:textSize="18sp"
-                    android:layout_weight="10"/>
-
+                    android:textSize="18sp">
+                </Spinner>
             </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Fecha: "
+                android:fontFamily="casual"
+                android:textSize="18sp"
+                android:layout_weight="0.3"
+                android:gravity="center_vertical"/>
+
+            <EditText
+                android:id="@+id/edtxt_fecha_admin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Fecha"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:layout_weight="0.7"
+                android:textSize="18sp">
+            </EditText>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Cantidad: "
+                android:fontFamily="casual"
+                android:textSize="18sp"
+                android:layout_weight="0.35"
+                android:gravity="center_vertical"/>
+
+            <EditText
+                android:id="@+id/edtxt_cantidad_admin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Cantidad en Kg"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:layout_weight="0.65"
+                android:textSize="18sp">
+            </EditText>
         </LinearLayout>
     </LinearLayout>
 
