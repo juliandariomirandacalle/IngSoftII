@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    android:layout_weight="100"
+    tools:context="com.example.juliandario.ejerciciobocadillos.UserActivity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Bienvenido"
+        android:fontFamily="casual"
+        android:textSize="28sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="40dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="7">
+
+            <TextView
+                android:id="@+id/txtVwInvBcd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="invBcd"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:id="@+id/edTxtVwInvBcd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"
+                android:enabled="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="7">
+
+            <TextView
+                android:id="@+id/txtVwBcdEnt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="bcdEnt"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:id="@+id/edTxtVwBcdEnt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"
+                android:enabled="false"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnAdmon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="  Administrador  "
+            android:textAlignment="center"
+            android:background="@android:color/holo_blue_light" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="7">
+
+            <TextView
+                android:id="@+id/txtVwInvMon100"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="invMon100"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:id="@+id/edTxtVwInvMon100"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"
+                android:enabled="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="7">
+
+            <TextView
+                android:id="@+id/txtVwInvMon200"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="invMon200"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:id="@+id/edTxtVwInvMon200"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"
+                android:enabled="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="7">
+
+            <TextView
+                android:id="@+id/txtVwInvMon500"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="invMon500"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:id="@+id/edTxtVwInvMon500"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"
+                android:enabled="false"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="100dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="7">
+
+            <TextView
+                android:id="@+id/txtVwVlr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Valor"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:id="@+id/edTxtVlr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnEnviar"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Enviar"
+            android:textAlignment="center" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="7">
+
+            <TextView
+                android:id="@+id/txtVwMon100"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mon100"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:id="@+id/edTxtVwMon100"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"
+                android:enabled="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="7">
+
+            <TextView
+                android:id="@+id/txtVwMon200"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mon200"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:id="@+id/edTxtVwMon200"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"
+                android:enabled="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="7">
+
+            <TextView
+                android:id="@+id/txtVwMon500"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Mon500"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"/>
+
+            <EditText
+                android:id="@+id/edTxtVwMon500"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:fontFamily="casual"
+                android:textSize="16sp"
+                android:enabled="false"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
