@@ -1,5 +1,9 @@
 Archivo
 para la prueba
 de las
-funcionalidades
+funcionalidades VARIACIÓN
 de GIT
+
+Le acabo
+de 
+hacer una v.
