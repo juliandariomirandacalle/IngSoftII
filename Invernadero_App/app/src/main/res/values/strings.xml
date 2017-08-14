@@ -1,3 +1,22 @@
 <resources>
-    <string name="app_name">Invernadero_App</string>
+    <string name="app_name">YaJu Greenhouse</string>
+
+    <string-array name="insumos">
+        <item>Magniesio (Mg)</item>
+        <item>Potasio (Ka)</item>
+        <item>Fósforo (P)</item>
+    </string-array>
+    <string-array name="proveedores">
+        <item>Agrofinca</item>
+        <item>Agroinsumos</item>
+    </string-array>
+
+    <string name="prompt_Username">Nombre de usuario</string>
+    <string name="prompt_password">Contraseña</string>
+    <string name="prompt_confirmPassword">Confirmar contraseña</string>
+    <string name="action_sign_in">Registrar</string>
+    <string name="action_back">Regresar</string>
+    <string name="nombre_insumo">Nombre de insumo</string>
+    <string name="campo_vacio">Campo Vacío</string>
+
 </resources>

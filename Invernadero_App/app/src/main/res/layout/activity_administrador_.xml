@@ -51,6 +51,7 @@
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:fontFamily="casual"
+                    android:entries="@array/insumos"
                     android:textSize="18sp">
                 </Spinner>
             </LinearLayout>
@@ -82,6 +83,7 @@
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:fontFamily="casual"
+                    android:entries="@array/proveedores"
                     android:textSize="18sp">
                 </Spinner>
             </LinearLayout>
@@ -111,6 +113,7 @@
                 android:textAlignment="center"
                 android:fontFamily="casual"
                 android:layout_weight="0.7"
+                android:inputType="date"
                 android:textSize="18sp">
             </EditText>
         </LinearLayout>
@@ -138,6 +141,7 @@
                 android:hint="Cantidad en Kg"
                 android:textAlignment="center"
                 android:fontFamily="casual"
+                android:inputType="number"
                 android:layout_weight="0.65"
                 android:textSize="18sp">
             </EditText>
@@ -145,8 +149,38 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/btnAgregarLoteAdmin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Agregar Lote de Producción"
+        android:textAlignment="center"
+        android:layout_marginTop="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnAgregarProveAdmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Agregar Proveedor"
+            android:textAlignment="center"
+            android:layout_weight="0.5"/>
+
+        <Button
+            android:id="@+id/btnAgregarInsAdmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Agregar Insumo"
+            android:textAlignment="center"
+            android:layout_weight="0.5"/>
+
+    </LinearLayout>
+
+    <Button
         android:id="@+id/btnEnviarAdmin"
-        android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Enviar"

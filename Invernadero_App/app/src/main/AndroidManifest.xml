@@ -16,7 +16,10 @@
             </intent-filter>
         </activity>
         <activity android:name=".Administrador_Activity" />
-        <activity android:name=".Operario_Activity"></activity>
+        <activity android:name=".Operario_Activity" />
+        <activity android:name=".SignUpActivity" />
+        <activity android:name=".ProveedorLayout" />
+        <activity android:name=".InsumoLayout"></activity>
     </application>
 
 </manifest>
