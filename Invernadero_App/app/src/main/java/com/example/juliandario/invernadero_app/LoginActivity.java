@@ -12,7 +12,7 @@ import android.widget.Toast;
 public class LoginActivity extends AppCompatActivity {
 
     EditText edTxtVwUsuario, edTxtVwPassword;
-    Button btnLogin;
+    Button btnLogin, btnSignUp;
     //String usuarioAdmin = "admin", passAdmin = "passadmin";
     String usuarioAdmin = "a", passAdmin = "pa";
     String usuarioOperario = "op", passOperario = "passop";
@@ -26,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
         edTxtVwUsuario = (EditText) findViewById(R.id.edTxtVwUsuario) ;
         edTxtVwPassword = (EditText) findViewById(R.id.edTxtVwPassword) ;
         btnLogin = (Button) findViewById(R.id.btnLogin);
+        btnSignUp = (Button) findViewById(R.id.btnSignUp);
 
         btnLogin.setOnClickListener(new View.OnClickListener()
         {
@@ -59,6 +60,15 @@ public class LoginActivity extends AppCompatActivity {
                     else
                         Toast.makeText(getApplicationContext(), "¡Usuario o Password no válidos!", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, SignUpActivity.class);
+                startActivity(intent);
+                LoginActivity.this.finish();
             }
         });
     }

@@ -102,53 +102,9 @@ public class Administrador_Activity extends AppCompatActivity {
         btnAgregarInsAdmin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder alertDialog = new AlertDialog.Builder(Administrador_Activity.this);
-                alertDialog.setTitle("INSUMO A ADICIONAR");
-                alertDialog.setMessage("Escriba el nombre del insumo");
-
-                final EditText input = new EditText(Administrador_Activity.this);
-                input.setGravity(Gravity.CENTER_HORIZONTAL);
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(30)}); // Max Length 20 Characters
-
-                final Spinner spinner = new Spinner(Administrador_Activity.this);
-
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-
-                LinearLayout linearSp = new LinearLayout(Administrador_Activity.this);
-                linearSp.setBackgroundResource(R.drawable.border_file);
-                linearSp.addView(spinner);
-
-                spinner.setLayoutParams(lp);
-                input.setLayoutParams(lp);
-
-                LinearLayout linearGeneral = new LinearLayout(Administrador_Activity.this);
-                linearGeneral.setOrientation(LinearLayout.VERTICAL);
-                linearGeneral.addView(input);
-                linearGeneral.addView(linearSp);
-
-                alertDialog.setView(linearGeneral);
-                //alertDialog.setIcon(R.drawable.key);
-
-                alertDialog.setPositiveButton("Adicionar",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                String proveedor = input.getText().toString();
-                                // TODO: Add insumo to DB
-                                dialog.cancel();
-                            }
-                        });
-
-                alertDialog.setNegativeButton("Cancelar",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-
-                alertDialog.show();
+                Intent intent = new Intent(context, InsumoLayout.class);
+                startActivity(intent);
+                Administrador_Activity.this.finish();
             }
         });
 
@@ -230,3 +186,52 @@ public class Administrador_Activity extends AppCompatActivity {
                 AlertDialog alertDialog = dialogBuilder.create();
                 alertDialog.show();
                 v.invalidate();*/
+
+
+    /*AlertDialog.Builder alertDialog = new AlertDialog.Builder(Administrador_Activity.this);
+alertDialog.setTitle("INSUMO A ADICIONAR");
+        alertDialog.setMessage("Escriba el nombre del insumo");
+
+final EditText input = new EditText(Administrador_Activity.this);
+        input.setGravity(Gravity.CENTER_HORIZONTAL);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(30)}); // Max Length 20 Characters
+
+final Spinner spinner = new Spinner(Administrador_Activity.this);
+
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams.MATCH_PARENT,
+        LinearLayout.LayoutParams.MATCH_PARENT);
+
+        LinearLayout linearSp = new LinearLayout(Administrador_Activity.this);
+        linearSp.setBackgroundResource(R.drawable.border_file);
+        linearSp.addView(spinner);
+
+        spinner.setLayoutParams(lp);
+        input.setLayoutParams(lp);
+
+        LinearLayout linearGeneral = new LinearLayout(Administrador_Activity.this);
+        linearGeneral.setOrientation(LinearLayout.VERTICAL);
+        linearGeneral.addView(input);
+        linearGeneral.addView(linearSp);
+
+        alertDialog.setView(linearGeneral);
+        //alertDialog.setIcon(R.drawable.key);
+
+        alertDialog.setPositiveButton("Adicionar",
+        new DialogInterface.OnClickListener() {
+public void onClick(DialogInterface dialog, int which) {
+        String proveedor = input.getText().toString();
+        // TODO: Add insumo to DB
+        dialog.cancel();
+        }
+        });
+
+        alertDialog.setNegativeButton("Cancelar",
+        new DialogInterface.OnClickListener() {
+public void onClick(DialogInterface dialog, int which) {
+        dialog.cancel();
+        }
+        });
+
+        alertDialog.show();*/

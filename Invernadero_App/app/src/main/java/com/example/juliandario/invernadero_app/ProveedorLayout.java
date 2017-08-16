@@ -213,6 +213,8 @@ public class ProveedorLayout extends AppCompatActivity {
                         campoVacio = true;
                         break;
                     }
+                    else
+                        insumos[i] = ((EditText) v1).getText().toString();
                 }
             }
         }
