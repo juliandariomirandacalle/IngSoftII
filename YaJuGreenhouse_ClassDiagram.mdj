@@ -345,7 +345,7 @@
 											"height": 13,
 											"autoResize": false,
 											"underline": false,
-											"text": "+generarInformeEntradas(Insumo insumo, Proveedor proveedor, int cantidad, Fecha fecha)",
+											"text": "+generarInformeEntradas(Insumo insumo, Proveedor proveedor, int cantidad, Date fecha)",
 											"horizontalAlignment": 0,
 											"verticalAlignment": 5,
 											"wordWrap": false
@@ -374,7 +374,7 @@
 											"height": 13,
 											"autoResize": false,
 											"underline": false,
-											"text": "+generarInformeSalidas(Insumo insumo, int cantidad, Fecha fecha, Lote lote)",
+											"text": "+generarInformeSalidas(Insumo insumo, int cantidad, Date fecha, Lote lote)",
 											"horizontalAlignment": 0,
 											"verticalAlignment": 5,
 											"wordWrap": false
@@ -4986,11 +4986,10 @@
 									"_parent": {
 										"$ref": "AAAAAAFd6DyoDMEx5ec="
 									},
-									"name": "Fecha fecha",
+									"name": "Date fecha",
 									"visibility": "public",
 									"isStatic": false,
 									"isLeaf": false,
-									"type": "",
 									"isReadOnly": false,
 									"isOrdered": false,
 									"isUnique": false,
@@ -5022,7 +5021,6 @@
 									"visibility": "public",
 									"isStatic": false,
 									"isLeaf": false,
-									"type": "",
 									"isReadOnly": false,
 									"isOrdered": false,
 									"isUnique": false,
@@ -5038,7 +5036,6 @@
 									"visibility": "public",
 									"isStatic": false,
 									"isLeaf": false,
-									"type": "",
 									"isReadOnly": false,
 									"isOrdered": false,
 									"isUnique": false,
@@ -5050,11 +5047,10 @@
 									"_parent": {
 										"$ref": "AAAAAAFd6D5LtMIbGPo="
 									},
-									"name": "Fecha fecha",
+									"name": "Date fecha",
 									"visibility": "public",
 									"isStatic": false,
 									"isLeaf": false,
-									"type": "",
 									"isReadOnly": false,
 									"isOrdered": false,
 									"isUnique": false,
@@ -5070,7 +5066,6 @@
 									"visibility": "public",
 									"isStatic": false,
 									"isLeaf": false,
-									"type": "",
 									"isReadOnly": false,
 									"isOrdered": false,
 									"isUnique": false,
