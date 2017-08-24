@@ -9,18 +9,23 @@ import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class InsumoLayout extends AppCompatActivity {
 
     LinearLayout linLayInsyProvee, linLayInsyProvee1, linLayProvee1, linLayIns1, layoutParcial;
-    EditText txtvw_Ins1;
+    AutoCompleteTextView txtvw_Ins1;
     Button btnAddInsyProvee1, btnRmvInsyProvee1, btnAgregarInsyProvee, btnRegresarInsyProvee;
     Spinner spinnerProveedor1;
     int contador = 1, cantidadViews = 1;
@@ -33,6 +38,9 @@ public class InsumoLayout extends AppCompatActivity {
     final String spinnerProveedorS = "spinnerProveedor";
     ArrayList<LinearLayout> linearLayoutsArray = new ArrayList<LinearLayout>();
     Context context = InsumoLayout.this;
+    String[] autocompleteInsumos, autocompleteProveedores;
+    UserDBHelper usersDB;
+    String nombreProveedor;
 
     Typeface typefaceEditText, typefaceButton, typefaceSpinner;
     ViewGroup.LayoutParams layparamsLinLayInsyProvee, layparamsLinLayProvee, layparamsLinLayIns,
@@ -43,6 +51,10 @@ public class InsumoLayout extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_insumo_layout);
 
+        usersDB = new UserDBHelper(context);
+        autocompleteInsumos = usersDB.insumosList();
+        autocompleteProveedores = usersDB.proveedoresList();
+
         linLayInsyProvee = (LinearLayout) findViewById(R.id.linLayInsyProvee);
         linLayInsyProvee1 = (LinearLayout) findViewById(R.id.linLayInsyProvee1);
         linLayProvee1 = (LinearLayout) findViewById(R.id.linLayProvee1);
@@ -50,8 +62,25 @@ public class InsumoLayout extends AppCompatActivity {
 
         btnAddInsyProvee1 = (Button) findViewById(R.id.btnAddInsyProvee1);
         btnRmvInsyProvee1 = (Button) findViewById(R.id.btnRmvInsyProvee1);
-        txtvw_Ins1 = (EditText) findViewById(R.id.txtvw_Ins1);
+        txtvw_Ins1 = (AutoCompleteTextView) findViewById(R.id.txtvw_Ins1);
+        /*txtvw_Ins1.setAdapter(new ArrayAdapter<String>(context,
+                android.R.layout.simple_dropdown_item_1line, autocompleteInsumos));*/
         spinnerProveedor1 = (Spinner) findViewById(R.id.spinnerProveedor1);
+        spinnerProveedor1.setAdapter(new ArrayAdapter<String>(context,
+                android.R.layout.simple_spinner_dropdown_item, autocompleteProveedores));
+
+        spinnerProveedor1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+
+                nombreProveedor = String.valueOf(parent.getItemAtPosition(pos));
+                autocompleteInsumos = usersDB.getInsumosPorProveedor(nombreProveedor);
+                txtvw_Ins1.setAdapter(new ArrayAdapter<String>(context,
+                        android.R.layout.simple_dropdown_item_1line, autocompleteInsumos));
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         linearLayoutsArray.add(linLayInsyProvee1);
 
@@ -71,12 +100,28 @@ public class InsumoLayout extends AppCompatActivity {
         btnAgregarInsyProvee.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(getInsumosProveedor() == null){ }
+                ArrayList<InsumoProveedor> array;
+                String cadena = "";
+                boolean valid = true;
+
+                if(verificarCampos()){ }
                 else {
-                    //TODO: Almacenar insumos en DB
-                    Intent intent = new Intent(context, Administrador_Activity.class);
+                    try {
+                        array = getInsumosProveedor();
+                        for (InsumoProveedor insumoProveedor : array) {
+                            /*cadena += insumoProveedor.getInusmo().getNombre() + "/" +
+                                    insumoProveedor.getProveedor().getNombre() + " - ";*/
+                            valid &= usersDB.insertarInsumo(insumoProveedor.getInusmo(), insumoProveedor.getProveedor());
+                        }
+                        if(valid)
+                            Toast.makeText(context, "Insumos insertados con éxito!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(context, cadena, Toast.LENGTH_LONG).show();
+                    } catch (Exception e){
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                    /*Intent intent = new Intent(context, Administrador_Activity.class);
                     startActivity(intent);
-                    InsumoLayout.this.finish();
+                    InsumoLayout.this.finish();*/
                 }
             }
         });
@@ -105,6 +150,30 @@ public class InsumoLayout extends AppCompatActivity {
         });
     }
 
+    public boolean verificarCampos(){
+        boolean emptyEdttxt = false;
+
+        for (int i = 0; i < linearLayoutsArray.size(); i++) {
+            LinearLayout v1L = (LinearLayout)(linearLayoutsArray.get(i));
+            for(int ii = 0; ii < v1L.getChildCount(); ii++){
+                LinearLayout v2L = (LinearLayout)v1L.getChildAt(ii);
+                if(v2L.getTag().toString().contains(linLayInsS)) {
+                    for (int iii = 0; iii < v2L.getChildCount(); iii++) {
+                        View v1Ed = ((LinearLayout) v2L).getChildAt(iii);
+                        if (v1Ed instanceof AutoCompleteTextView) {
+                            if (((AutoCompleteTextView) v1Ed).getText().toString().trim().length() == 0) {
+                                emptyEdttxt = true;
+                                ((AutoCompleteTextView) v1Ed).setError("Campo Vacío");
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return emptyEdttxt;
+    }
+
     public void addInsumo(View v){
         try {
             boolean emptyEdttxt = false;
@@ -113,10 +182,10 @@ public class InsumoLayout extends AppCompatActivity {
                 if(v1L.getTag().toString().contains(linLayInsS)) {
                     for (int ii = 0; ii < ((LinearLayout)v1L).getChildCount(); ii++) {
                         View v1Ed = ((LinearLayout)v1L).getChildAt(ii);
-                        if (v1Ed instanceof EditText) {
-                            if (((EditText) v1Ed).getText().toString().trim().length() == 0) {
+                        if (v1Ed instanceof AutoCompleteTextView) {
+                            if (((AutoCompleteTextView) v1Ed).getText().toString().trim().length() == 0) {
                                 emptyEdttxt = true;
-                                ((EditText) v1Ed).setError("Campo Vacío");
+                                ((AutoCompleteTextView) v1Ed).setError("Campo Vacío");
                                 break;
                             }
                         }
@@ -147,12 +216,14 @@ public class InsumoLayout extends AppCompatActivity {
                 linLayProvee.setBackgroundResource(R.drawable.border_file);
                 linLayProvee.setOrientation(LinearLayout.VERTICAL);
 
-                EditText editText = new EditText(InsumoLayout.this);
+                final AutoCompleteTextView editText = new AutoCompleteTextView(InsumoLayout.this);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT);
                 editText.setTag(txtvw_InsS + contador);
                 editText.setHint(R.string.nombre_insumo);
                 editText.setTypeface(typefaceEditText);
                 editText.setLayoutParams(layparamsEditText);
+                /*editText.setAdapter(new ArrayAdapter<String>(context,
+                       android.R.layout.simple_dropdown_item_1line, autocompleteInsumos));*/
                 linLayIns.addView(editText);
 
                 Button button1 = new Button(InsumoLayout.this);
@@ -190,6 +261,20 @@ public class InsumoLayout extends AppCompatActivity {
                 Spinner spinner = new Spinner(InsumoLayout.this);
                 spinner.setTag(spinnerProveedorS + contador);
                 spinner.setLayoutParams(layparamsSpinner);
+                spinner.setGravity(View.TEXT_ALIGNMENT_CENTER);
+                spinner.setAdapter(new ArrayAdapter<String>(context,
+                       android.R.layout.simple_spinner_dropdown_item, autocompleteProveedores));
+               spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                   public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                       nombreProveedor = String.valueOf(parent.getItemAtPosition(pos));
+                       autocompleteInsumos = usersDB.getInsumosPorProveedor(nombreProveedor);
+                       editText.setAdapter(new ArrayAdapter<String>(context,
+                               android.R.layout.simple_dropdown_item_1line, autocompleteInsumos));
+                   }
+                   public void onNothingSelected(AdapterView<?> parent) {
+
+                   }
+               });
                 linLayProvee.addView(spinner);
 
                 linLayInsyProveeP.addView(linLayIns);
@@ -234,10 +319,54 @@ public class InsumoLayout extends AppCompatActivity {
         }
     }
 
-    public String[] getInsumosProveedor(){
-        return null;
+    public ArrayList<InsumoProveedor> getInsumosProveedor(){
+        Insumo insumo; Proveedor proveedor;
+        InsumoProveedor insumoProveedor = new InsumoProveedor();
+        ArrayList<InsumoProveedor> array = new ArrayList<InsumoProveedor>();
+
+        for (int i = 0; i < linearLayoutsArray.size(); i++) {
+            LinearLayout v1L = (LinearLayout)(linearLayoutsArray.get(i));
+            for(int ii = 0; ii < v1L.getChildCount(); ii++){
+                LinearLayout v2L = (LinearLayout)v1L.getChildAt(ii);
+                    for (int iii = 0; iii < v2L.getChildCount(); iii++) {
+                        View v1Ed = ((LinearLayout) v2L).getChildAt(iii);
+                        if (v1Ed instanceof AutoCompleteTextView) {
+                            insumo = new Insumo(((AutoCompleteTextView) v1Ed).getText().toString().trim(), 0);
+                            insumoProveedor.setInusmo(insumo);
+                        }
+                        else if(v1Ed instanceof Spinner){
+                            proveedor = new Proveedor((String)((Spinner)v1Ed).getSelectedItem());
+                            insumoProveedor.setProveedor(proveedor);
+                        }
+                    }
+            }
+            array.add(insumoProveedor);
+            insumoProveedor = new InsumoProveedor();
+        }
+
+        return array;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(context, Administrador_Activity.class);
+        startActivity(intent);
+        InsumoLayout.this.finish();
     }
 }
 
-/*Toast.makeText(context, ((LinearLayout)(v.getParent().getParent())).getTag().toString()
-        + " numb: " + numberView, Toast.LENGTH_LONG).show();*/
+/*for (int i = 0; i < ((LinearLayout)(linearLayoutsArray.get(cantidadViews - 1))).getChildCount(); i++) {
+            View v1L = ((LinearLayout)(linearLayoutsArray.get(cantidadViews - 1))).getChildAt(i);
+            if(v1L.getTag().toString().contains(linLayInsS)) {
+                for (int ii = 0; ii < ((LinearLayout)v1L).getChildCount(); ii++) {
+                    View v1Ed = ((LinearLayout)v1L).getChildAt(ii);
+                    if (v1Ed instanceof AutoCompleteTextView) {
+                        if (((AutoCompleteTextView) v1Ed).getText().toString().trim().length() == 0) {
+                            emptyEdttxt = true;
+                            ((AutoCompleteTextView) v1Ed).setError("Campo Vacío");
+                            break;
+                        }
+                    }
+                }
+            }
+        }*/

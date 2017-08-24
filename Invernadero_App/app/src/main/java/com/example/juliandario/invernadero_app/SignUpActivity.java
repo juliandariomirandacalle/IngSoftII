@@ -16,11 +16,14 @@ public class SignUpActivity extends AppCompatActivity {
     EditText txtvwPassword, txtvwConfirmPassword;
     Button btnRegistrarSignUp, btnRegresarSignUp;
     final Context context = this;
+    UserDBHelper usersDB;
+    Usuario usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
+        usersDB = new UserDBHelper(context);
 
         txtvwFirstName = (AutoCompleteTextView) findViewById(R.id.txtvwFirstName);
         txtvwPassword = (EditText) findViewById(R.id.txtvwPassword);
@@ -62,8 +65,13 @@ public class SignUpActivity extends AppCompatActivity {
         else{
             if(!pass.equals(cPass))
                 Toast.makeText(context, "Contraseñas no coniciden", Toast.LENGTH_SHORT).show();
-            else{
-                //TODO: almacenar regitro en DB
+            else {
+                if(usersDB.insertarUsuario(new Usuario(name, pass, "OP"))) {
+                    Toast.makeText(context, "Usuario insertado con éxito", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, LoginActivity.class);
+                    startActivity(intent);
+                    SignUpActivity.this.finish();
+                }
             }
         }
     }

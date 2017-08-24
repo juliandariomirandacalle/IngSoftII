@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_operario_"
+    android:id="@+id/activity_entradas_"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -9,12 +9,12 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context="com.example.juliandario.invernadero_app.Operario_Activity">
+    tools:context="com.example.juliandario.invernadero_app.Entradas_Activity">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Operario - Consumo"
+        android:text="Administrador - Entradas"
         android:textAlignment="center"
         android:fontFamily="casual"
         android:textSize="24sp"
@@ -46,12 +46,11 @@
                 android:background="@drawable/border_file"
                 android:layout_weight="0.75">
                 <Spinner
-                    android:id="@+id/spinner_insumo_op"
+                    android:id="@+id/spinner_insumo_admin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:fontFamily="casual"
-                    android:entries="@array/insumos"
                     android:textSize="18sp">
                 </Spinner>
             </LinearLayout>
@@ -67,18 +66,18 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lote de Prod: "
+                android:text="Proveedores: "
                 android:fontFamily="casual"
                 android:textSize="18sp"
-                android:layout_weight="0.08"/>
+                android:layout_weight="0.1"/>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/border_file"
-                android:layout_weight="0.92">
+                android:layout_weight="0.9">
                 <Spinner
-                    android:id="@+id/spinner_lotes_op"
+                    android:id="@+id/spinner_proveedores_admin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
@@ -105,14 +104,14 @@
                 android:gravity="center_vertical"/>
 
             <EditText
-                android:id="@+id/edtxt_fecha_op"
+                android:id="@+id/edtxt_fecha_admin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="Fecha"
-                android:inputType="date"
                 android:textAlignment="center"
                 android:fontFamily="casual"
                 android:layout_weight="0.7"
+                android:inputType="date"
                 android:textSize="18sp">
             </EditText>
         </LinearLayout>
@@ -134,7 +133,7 @@
                 android:gravity="center_vertical"/>
 
             <EditText
-                android:id="@+id/edtxt_cantidad_op"
+                android:id="@+id/edtxt_cantidad_admin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="Cantidad en Kg"
@@ -149,15 +148,14 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnEnviarOp"
-        android:layout_marginTop="10dp"
+        android:id="@+id/btnEnviarEntradas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Enviar"
         android:textAlignment="center"/>
 
     <Button
-        android:id="@+id/btnRegresarOp"
+        android:id="@+id/btnRegresarEntradas"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Regresar"

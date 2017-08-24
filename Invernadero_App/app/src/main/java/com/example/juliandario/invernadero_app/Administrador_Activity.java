@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,35 +20,40 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class Administrador_Activity extends AppCompatActivity {
 
-    String[] insumos = new String[] {"1", "2", "3", "4", "5"};
-
-    Spinner spinner_insumo_admin, spinner_proveedores_admin;
-    EditText edtxt_fecha_admin, edtxt_cantidad_admin;
-    Button btnEnviarAdmin, btnRegresarAdmin, btnAgregarLoteAdmin, btnAgregarInsAdmin, btnAgregarProveAdmin;
+    Button btnRegresarAdmin, btnAgregarLoteAdmin, btnAgregarInsAdmin, btnAgregarProveAdmin, btnIngresarEntrada;
+    Button btnInformeEntradas, btnInformeSalidas, btnInformeProvee, btnInformeLotes;
     Context context = Administrador_Activity.this;
-    Button btnCancelarProveedor, btnAgregarProveedor;
+    UserDBHelper usersDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_administrador_);
+        usersDB = new UserDBHelper(context);
 
-        spinner_insumo_admin = (Spinner) findViewById(R.id.spinner_insumo_admin);
-        spinner_proveedores_admin = (Spinner) findViewById(R.id.spinner_proveedores_admin);
-        edtxt_fecha_admin = (EditText) findViewById(R.id.edtxt_fecha_admin);
-        edtxt_cantidad_admin = (EditText) findViewById(R.id.edtxt_cantidad_admin);
-        btnEnviarAdmin = (Button) findViewById(R.id.btnEnviarAdmin);
         btnRegresarAdmin = (Button) findViewById(R.id.btnRegresarAdmin);
         btnAgregarLoteAdmin = (Button) findViewById(R.id.btnAgregarLoteAdmin);
         btnAgregarInsAdmin = (Button) findViewById(R.id.btnAgregarInsAdmin);
         btnAgregarProveAdmin = (Button) findViewById(R.id.btnAgregarProveAdmin);
+        btnIngresarEntrada = (Button) findViewById(R.id.btnIngresarEntrada);
 
-        btnEnviarAdmin.setOnClickListener(new View.OnClickListener() {
+        btnInformeEntradas = (Button) findViewById(R.id.btnInformeEntradas);
+        btnInformeSalidas = (Button) findViewById(R.id.btnInformeSalidas);
+        btnInformeProvee = (Button) findViewById(R.id.btnInformeProvee);
+        btnInformeLotes = (Button) findViewById(R.id.btnInformeLotes);
+
+        btnIngresarEntrada.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(context, Entradas_Activity.class);
+                startActivity(intent);
+                Administrador_Activity.this.finish();
             }
         });
 
@@ -82,9 +88,20 @@ public class Administrador_Activity extends AppCompatActivity {
                 alertDialog.setPositiveButton("Adicionar",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                int lote = Integer.valueOf(input.getText().toString());
-                                // TODO: Add lote to DB
-                                dialog.cancel();
+                                if(input.getText().toString().trim().equals(""))
+                                    input.setError("Campo Vacío");
+                                else {
+                                    int lote = Integer.valueOf(input.getText().toString());
+                                    int inicio = usersDB.cantidadLotes();
+                                    for(int i = inicio + 1; i <= (lote + inicio); i++) {
+                                        try{usersDB.insertarLote(String.valueOf("Lote" + i), String.valueOf(System.currentTimeMillis()));}
+                                        catch(Exception e){Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();}
+                                    }
+                                    Toast.makeText(context, "Lotes insertados con éxito!", Toast.LENGTH_SHORT).show();
+                                    dialog.cancel();
+                                    /*String fecha = new SimpleDateFormat("dd/MM/yyyy_HH:mm:ss").
+                                            format(new Date(System.currentTimeMillis()));*/
+                                }
                             }
                         });
 
@@ -116,6 +133,29 @@ public class Administrador_Activity extends AppCompatActivity {
                 Administrador_Activity.this.finish();
             }
         });
+
+        btnInformeLotes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, usersDB.toStringLotes(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(context, LoginActivity.class);
+        startActivity(intent);
+        Administrador_Activity.this.finish();
+    }
+
+    public String millisToDate(Long timeInMillis){
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timeInMillis);
+
+        return calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" +
+                calendar.get(Calendar.YEAR) + "_" + calendar.get(Calendar.HOUR_OF_DAY) + ":" +
+                calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND);
     }
 }
 

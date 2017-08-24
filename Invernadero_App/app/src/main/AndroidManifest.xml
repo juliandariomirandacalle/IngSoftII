@@ -19,7 +19,8 @@
         <activity android:name=".Operario_Activity" />
         <activity android:name=".SignUpActivity" />
         <activity android:name=".ProveedorLayout" />
-        <activity android:name=".InsumoLayout"></activity>
+        <activity android:name=".InsumoLayout" />
+        <activity android:name=".Entradas_Activity"></activity>
     </application>
 
 </manifest>

@@ -14,147 +14,19 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Administrador - Entradas"
+        android:text="Administrador"
         android:textAlignment="center"
         android:fontFamily="casual"
         android:textSize="24sp"
         android:layout_marginBottom="30dp"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="1"
-            android:layout_marginBottom="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Insumo: "
-                android:fontFamily="casual"
-                android:textSize="18sp"
-                android:layout_weight="0.25"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/border_file"
-                android:layout_weight="0.75">
-                <Spinner
-                    android:id="@+id/spinner_insumo_admin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:fontFamily="casual"
-                    android:entries="@array/insumos"
-                    android:textSize="18sp">
-                </Spinner>
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="1"
-            android:layout_marginBottom="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Proveedores: "
-                android:fontFamily="casual"
-                android:textSize="18sp"
-                android:layout_weight="0.1"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/border_file"
-                android:layout_weight="0.9">
-                <Spinner
-                    android:id="@+id/spinner_proveedores_admin"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:fontFamily="casual"
-                    android:entries="@array/proveedores"
-                    android:textSize="18sp">
-                </Spinner>
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="1"
-            android:layout_marginBottom="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Fecha: "
-                android:fontFamily="casual"
-                android:textSize="18sp"
-                android:layout_weight="0.3"
-                android:gravity="center_vertical"/>
-
-            <EditText
-                android:id="@+id/edtxt_fecha_admin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Fecha"
-                android:textAlignment="center"
-                android:fontFamily="casual"
-                android:layout_weight="0.7"
-                android:inputType="date"
-                android:textSize="18sp">
-            </EditText>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_weight="1"
-            android:layout_marginBottom="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Cantidad: "
-                android:fontFamily="casual"
-                android:textSize="18sp"
-                android:layout_weight="0.35"
-                android:gravity="center_vertical"/>
-
-            <EditText
-                android:id="@+id/edtxt_cantidad_admin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Cantidad en Kg"
-                android:textAlignment="center"
-                android:fontFamily="casual"
-                android:inputType="number"
-                android:layout_weight="0.65"
-                android:textSize="18sp">
-            </EditText>
-        </LinearLayout>
-    </LinearLayout>
 
     <Button
         android:id="@+id/btnAgregarLoteAdmin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Agregar Lote de Producción"
-        android:textAlignment="center"
-        android:layout_marginTop="10dp"/>
+        android:textAlignment="center"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -176,21 +48,45 @@
             android:text="Agregar Insumo"
             android:textAlignment="center"
             android:layout_weight="0.5"/>
-
     </LinearLayout>
 
     <Button
-        android:id="@+id/btnEnviarAdmin"
+        android:id="@+id/btnIngresarEntrada"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Enviar"
-        android:textAlignment="center"/>
+        android:text="Ingresar Entrada Insumo"
+        android:textAlignment="center"
+        android:layout_marginBottom="15dp"/>
 
+    <Button
+        android:id="@+id/btnInformeEntradas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generar Informe de Entradas"
+        android:textAlignment="center"/>
+    <Button
+        android:id="@+id/btnInformeSalidas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generar Informe de Salidas"
+        android:textAlignment="center"/>
+    <Button
+        android:id="@+id/btnInformeProvee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generar Informe de Proveedores"
+        android:textAlignment="center" />
+    <Button
+        android:id="@+id/btnInformeLotes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Generar Informe de Lotes"
+        android:textAlignment="center"
+        android:layout_marginBottom="15dp"/>
     <Button
         android:id="@+id/btnRegresarAdmin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Regresar"
         android:textAlignment="center"/>
-
 </LinearLayout>

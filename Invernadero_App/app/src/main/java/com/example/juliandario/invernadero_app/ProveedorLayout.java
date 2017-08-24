@@ -9,6 +9,8 @@ import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -22,7 +24,8 @@ import java.util.Arrays;
 public class ProveedorLayout extends AppCompatActivity {
 
     LinearLayout linerLayoutInsumos, linerLayoutInsumo1, layoutParcial ;
-    EditText txtvw_Proveedor, txtvw_Insumo1;
+    EditText txtvw_Proveedor;
+    AutoCompleteTextView txtvw_Insumo1;
     Button btnAddInsumo1, btnRmvInsumo1, btnAgregarProveedor, btnRegresarProveedor;
     int contador = 1, cantidadViews = 1;
     final String linerLayoutInsumo = "linerLayoutInsumo";
@@ -30,7 +33,11 @@ public class ProveedorLayout extends AppCompatActivity {
     final String btnAddInsumo = "btnAddInsumo";
     final String btnRmvInsumo = "btnRmvInsumo";
     ArrayList<LinearLayout> linearLayoutsArray = new ArrayList<LinearLayout>();
+    ArrayList<Insumo> insumos;
+    String[] autocompleteInsumos;
     Context context = ProveedorLayout.this;
+    Proveedor proveedor;
+    UserDBHelper usersDB;
 
     Typeface typefaceEditText, typefaceButton;
     ViewGroup.LayoutParams layoutparamsLinearLayout, layoutparamsEditText, layoutparamsButton;
@@ -40,12 +47,17 @@ public class ProveedorLayout extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_proveedor_layout);
 
+        usersDB = new UserDBHelper(context);
+        autocompleteInsumos = usersDB.insumosList();
+
         linerLayoutInsumos = (LinearLayout) findViewById(R.id.linerLayoutInsumos);
         linerLayoutInsumo1 = (LinearLayout) findViewById(R.id.linerLayoutInsumo1);
         btnAddInsumo1 = (Button) findViewById(R.id.btnAddInsumo1);
         btnRmvInsumo1 = (Button) findViewById(R.id.btnRmvInsumo1);
         txtvw_Proveedor = (EditText) findViewById(R.id.txtvw_Proveedor);
-        txtvw_Insumo1 = (EditText) findViewById(R.id.txtvw_Insumo1);
+        txtvw_Insumo1 = (AutoCompleteTextView) findViewById(R.id.txtvw_Insumo1);
+        txtvw_Insumo1.setAdapter(new ArrayAdapter<String>(context,
+                android.R.layout.simple_dropdown_item_1line, autocompleteInsumos));
         linearLayoutsArray.add(linerLayoutInsumo1);
 
         btnAgregarProveedor = (Button) findViewById(R.id.btnAgregarProveedor);
@@ -60,16 +72,38 @@ public class ProveedorLayout extends AppCompatActivity {
         btnAgregarProveedor.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String proveedor = txtvw_Proveedor.getText().toString();
-                String[] insumos = getInsumosProveedor();
-                if(proveedor.length() == 0)
+                proveedor = new Proveedor(txtvw_Proveedor.getText().toString());
+                insumos = getInsumosProveedor();
+                if(proveedor.getNombre().length() == 0)
                     txtvw_Proveedor.setError("Campo Vacío");
                 else if(insumos == null){ }
                 else {
-                    //TODO: Almacenar insumos en DB
-                    Intent intent = new Intent(context, Administrador_Activity.class);
-                    startActivity(intent);
-                    ProveedorLayout.this.finish();
+                    if(usersDB.insertarProveedor(proveedor)) {
+                        boolean insumosAdd = true, add1, add2;
+                        for (Insumo insumo: insumos) {
+                            int id_insumo = usersDB.consultarInsumo(insumo);
+                            if(id_insumo == -1) {
+                                add1 = usersDB.insertarInsumo(insumo);
+                                add2 = usersDB.insertarInsumoProveedor(usersDB.cantidadInsumos(), usersDB.cantidadProveedores());
+                            }
+                            else {
+                                add1 = true;
+                                add2 = usersDB.insertarInsumoProveedor(id_insumo, usersDB.cantidadProveedores());
+                            }
+                            if(!add1 || !add2)
+                                insumosAdd = false;
+                        }
+                        if(insumosAdd) {
+                            Toast.makeText(context, "Proveedor insertado con éxito!", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(context, Administrador_Activity.class);
+                            startActivity(intent);
+                            ProveedorLayout.this.finish();
+                        }
+                        else
+                            Toast.makeText(context, "Error en inserción", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                        txtvw_Proveedor.setError("Ya existe el proveedor");
                 }
             }
         });
@@ -125,12 +159,14 @@ public class ProveedorLayout extends AppCompatActivity {
                 linearLayout.setLayoutParams(layoutparamsLinearLayout);
                 linearLayout.setOrientation(LinearLayout.HORIZONTAL);
 
-                EditText editText = new EditText(ProveedorLayout.this);
+                AutoCompleteTextView editText = new AutoCompleteTextView(ProveedorLayout.this);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT);
                 editText.setTag(txtvw_Insumo + contador);
                 editText.setHint(R.string.nombre_insumo);
                 editText.setTypeface(typefaceEditText);
                 editText.setLayoutParams(layoutparamsEditText);
+                editText.setAdapter(new ArrayAdapter<String>(context,
+                        android.R.layout.simple_dropdown_item_1line, autocompleteInsumos));
                 linearLayout.addView(editText);
 
                 Button button1 = new Button(ProveedorLayout.this);
@@ -200,8 +236,9 @@ public class ProveedorLayout extends AppCompatActivity {
         }
     }
 
-    public String[] getInsumosProveedor(){
-        String[] insumos = new String[linearLayoutsArray.size()];
+    public ArrayList<Insumo> getInsumosProveedor(){
+        ArrayList<Insumo> insumos = new ArrayList<Insumo>();
+        Insumo insumo;
         boolean campoVacio = false;
 
         for (LinearLayout layout : linearLayoutsArray) {
@@ -213,8 +250,11 @@ public class ProveedorLayout extends AppCompatActivity {
                         campoVacio = true;
                         break;
                     }
-                    else
-                        insumos[i] = ((EditText) v1).getText().toString();
+                    else {
+                        insumo = new Insumo((((EditText) v1).getText().toString()), 0);
+                        if(!insumos.contains(insumo))
+                            insumos.add(insumo);
+                    }
                 }
             }
         }
@@ -223,5 +263,12 @@ public class ProveedorLayout extends AppCompatActivity {
             return null;
         else
             return insumos;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(context, Administrador_Activity.class);
+        startActivity(intent);
+        ProveedorLayout.this.finish();
     }
 }

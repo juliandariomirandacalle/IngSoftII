@@ -13,15 +13,17 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText edTxtVwUsuario, edTxtVwPassword;
     Button btnLogin, btnSignUp;
-    //String usuarioAdmin = "admin", passAdmin = "passadmin";
-    String usuarioAdmin = "a", passAdmin = "pa";
-    String usuarioOperario = "op", passOperario = "passop";
+    Usuario usuario;
+    UserDBHelper usersDB;
+    final Context context = LoginActivity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        final Context context = this;
+        usuario = new Usuario();
+        usersDB = new UserDBHelper(context);
+        //inizializarDB(usersDB);
 
         edTxtVwUsuario = (EditText) findViewById(R.id.edTxtVwUsuario) ;
         edTxtVwPassword = (EditText) findViewById(R.id.edTxtVwPassword) ;
@@ -31,34 +33,43 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View arg0) {
-
-                String usuario = edTxtVwUsuario.getText().toString();
-                String pass = edTxtVwPassword.getText().toString();
+                usuario.setUsername(edTxtVwUsuario.getText().toString());
+                usuario.setPass(edTxtVwPassword.getText().toString());
                 boolean bandera = false;
 
-                if(usuario.equals("")){
+                if(usuario.getUsername().equals("")){
                     bandera = true;
                     edTxtVwUsuario.setError("Campo Vacío");
                 }
-                if(pass.equals("")){
+                if(usuario.getPass().equals("")){
                     bandera = true;
                     edTxtVwPassword.setError("Campo Vacío");
                 }
 
                 if(!bandera)
                 {
-                    if(usuario.equals(usuarioAdmin) && pass.equals(passAdmin)) {
-                        Intent intent = new Intent(context, Administrador_Activity.class);
-                        startActivity(intent);
-                        LoginActivity.this.finish();
+                    try {
+                        String tipoUsuario = usersDB.consultarUsuario(usuario.getUsername(), usuario.getPass());
+
+                        if(tipoUsuario == null)
+                            Toast.makeText(getApplicationContext(), "¡Usuario o Password no válidos!", Toast.LENGTH_SHORT).show();
+                        else {
+                            if(tipoUsuario.equals("AD")){
+                                Intent intent = new Intent(context, Administrador_Activity.class);
+                                startActivity(intent);
+                                LoginActivity.this.finish();
+                            }
+                            else if(tipoUsuario.equals("OP")){
+                                Intent intent = new Intent(context, Operario_Activity.class);
+                                startActivity(intent);
+                                LoginActivity.this.finish();
+                            }
+                            else
+                                Toast.makeText(getApplicationContext(), "¡Usuario o Password no válidos!", Toast.LENGTH_SHORT).show();
+                        }
+                    } catch(Exception e) {
+                        Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
                     }
-                    else if(usuario.equals(usuarioOperario) && pass.equals(passOperario)) {
-                        Intent intent = new Intent(context, Operario_Activity.class);
-                        startActivity(intent);
-                        LoginActivity.this.finish();
-                    }
-                    else
-                        Toast.makeText(getApplicationContext(), "¡Usuario o Password no válidos!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -72,4 +83,30 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
+
+    public static void inizializarDB(UserDBHelper usersDB){
+        String usuarioAdmin = "a", passAdmin = "pa";
+        String usuarioOperario = "op", passOperario = "passop";
+        usersDB.clearDB();
+        //usersDB.deleteDB();
+        usersDB.insertarUsuario(new Usuario(usuarioAdmin, passAdmin, "AD"));
+        usersDB.insertarUsuario(new Usuario(usuarioOperario, passOperario, "OP"));
+    }
 }
+
+        /*if(!bandera)
+        {
+            if(usuario.getUsername().equals(usuarioAdmin) && usuario.getPass().equals(passAdmin)) {
+            Intent intent = new Intent(context, Administrador_Activity.class);
+            startActivity(intent);
+            LoginActivity.this.finish();
+            }
+            else if(usuario.getUsername().equals(usuarioOperario) && usuario.getPass().equals(passOperario)) {
+            Intent intent = new Intent(context, Operario_Activity.class);
+            startActivity(intent);
+            LoginActivity.this.finish();
+            }
+            else
+            Toast.makeText(getApplicationContext(), "¡Usuario o Password no válidos!", Toast.LENGTH_SHORT).show();
+            }
+        }*/
