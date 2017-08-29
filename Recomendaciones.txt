@@ -1,0 +1,14 @@
+Recomendaciones:
+
+- Poder modificar los nombres de lotes
+- Poder limpiar la DB
+- Manejar unidades
+- Cuánto valo?
+  - Licencia
+    - Va ligado el código fuente ?
+    - Permisos
+    - Tiempo para par uso, pruebas y capacitación
+    - Soporte
+    - Mantenimiento
+    - Alcance
+    - Restricciones

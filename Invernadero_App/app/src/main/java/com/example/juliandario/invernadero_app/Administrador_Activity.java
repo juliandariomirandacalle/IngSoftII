@@ -4,12 +4,15 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
 import android.os.SystemClock;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +23,24 @@ import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.Toast;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -134,6 +154,41 @@ public class Administrador_Activity extends AppCompatActivity {
             }
         });
 
+        btnInformeEntradas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String filename = "Entradas.xls";
+                if(excelFileEntradas(context, filename, usersDB)) {
+                    File file = new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DOWNLOADS), filename);
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(file),"application/vnd.ms-excel");
+                    startActivity(intent);
+                }
+            }
+        });
+
+        btnInformeSalidas.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String filename = "Salidas.xls";
+                if(excelFileSalidas(context, filename, usersDB)) {
+                    File file = new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_DOWNLOADS), filename);
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(file),"application/vnd.ms-excel");
+                    startActivity(intent);
+                }
+            }
+        });
+
+        btnInformeProvee.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
         btnInformeLotes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -157,121 +212,264 @@ public class Administrador_Activity extends AppCompatActivity {
                 calendar.get(Calendar.YEAR) + "_" + calendar.get(Calendar.HOUR_OF_DAY) + ":" +
                 calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND);
     }
+
+    private static boolean excelFileEntradas(Context context, String fileName, UserDBHelper usersDB) {
+
+        // check if available and not read only
+        if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
+            return false;
+        }
+
+        boolean success = false;
+
+        //New Workbook
+        Workbook wb = new HSSFWorkbook();
+
+        Cell c = null;
+
+        //Cell style for header row
+        CellStyle cs = wb.createCellStyle();
+        cs.setFillForegroundColor(HSSFColor.AQUA.index);
+        cs.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        cs.setAlignment(CellStyle.ALIGN_CENTER);
+        cs.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        Font defaultFont = wb.createFont();
+        defaultFont.setFontHeightInPoints((short)10);
+        defaultFont.setFontName("Garamond");
+        defaultFont.setColor(IndexedColors.BLACK.getIndex());
+        defaultFont.setBold(true);
+        defaultFont.setItalic(false);
+        cs.setFont(defaultFont);
+
+        CellStyle cs2 = wb.createCellStyle();
+        cs2.setFillForegroundColor(HSSFColor.WHITE.index);
+        cs2.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        cs2.setAlignment(CellStyle.ALIGN_LEFT);
+        cs2.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        defaultFont = wb.createFont();
+        defaultFont.setFontHeightInPoints((short)10);
+        defaultFont.setFontName("Garamond");
+        defaultFont.setColor(IndexedColors.BLACK.getIndex());
+        defaultFont.setBold(false);
+        defaultFont.setItalic(false);
+        cs.setFont(defaultFont);
+
+        //New Sheet
+        Sheet sheet1 = null;
+        sheet1 = wb.createSheet("Entradas");
+
+        // Generate column headings
+        Row row = sheet1.createRow(0);
+
+        c = row.createCell(0);
+        c.setCellValue("Insumo");
+        c.setCellStyle(cs);
+
+        c = row.createCell(1);
+        c.setCellValue("Proveedor");
+        c.setCellStyle(cs);
+
+        c = row.createCell(2);
+        c.setCellValue("Cantidad");
+        c.setCellStyle(cs);
+
+        c = row.createCell(3);
+        c.setCellValue("Fecha");
+        c.setCellStyle(cs);
+
+        sheet1.setColumnWidth(0, (15 * 500));
+        sheet1.setColumnWidth(1, (15 * 500));
+        sheet1.setColumnWidth(2, (15 * 500));
+        sheet1.setColumnWidth(3, (15 * 500));
+
+        ArrayList<Entrada> entradas = usersDB.toStringEntradas();
+
+        for (int i = 0; i < entradas.size(); i++) {
+            Entrada entrada = entradas.get(i);
+
+            row = sheet1.createRow(i + 1);
+
+            c = row.createCell(0);
+            c.setCellValue(entrada.getInsumo());
+            c.setCellStyle(cs2);
+
+            c = row.createCell(1);
+            c.setCellValue(entrada.getProveedor());
+            c.setCellStyle(cs2);
+
+            c = row.createCell(2);
+            c.setCellValue(entrada.getCantidad());
+            c.setCellStyle(cs2);
+
+            c = row.createCell(3);
+            c.setCellValue(entrada.getFecha());
+            c.setCellStyle(cs2);
+
+            sheet1.setColumnWidth(0, (15 * 500));
+            sheet1.setColumnWidth(1, (15 * 500));
+            sheet1.setColumnWidth(2, (15 * 500));
+            sheet1.setColumnWidth(3, (15 * 500));
+        }
+
+        // Create a path where we will place our List of objects on external storage
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS), fileName);
+        FileOutputStream os = null;
+
+        try {
+            os = new FileOutputStream(file);
+            wb.write(os);
+            success = true;
+        }
+        catch (Exception e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        finally {
+            try {
+                if (null != os)
+                    os.close();
+            }
+            catch (Exception ex) { }
+        }
+
+        return success;
+    }
+
+    private static boolean excelFileSalidas(Context context, String fileName, UserDBHelper usersDB) {
+
+        // check if available and not read only
+        if (!isExternalStorageAvailable() || isExternalStorageReadOnly()) {
+            return false;
+        }
+
+        boolean success = false;
+
+        //New Workbook
+        Workbook wb = new HSSFWorkbook();
+
+        Cell c = null;
+
+        //Cell style for header row
+        CellStyle cs = wb.createCellStyle();
+        cs.setFillForegroundColor(HSSFColor.AQUA.index);
+        cs.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        cs.setAlignment(CellStyle.ALIGN_CENTER);
+        cs.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        Font defaultFont = wb.createFont();
+        defaultFont.setFontHeightInPoints((short)10);
+        defaultFont.setFontName("Garamond");
+        defaultFont.setColor(IndexedColors.BLACK.getIndex());
+        defaultFont.setBold(true);
+        defaultFont.setItalic(false);
+        cs.setFont(defaultFont);
+
+        CellStyle cs2 = wb.createCellStyle();
+        cs2.setFillForegroundColor(HSSFColor.WHITE.index);
+        cs2.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+        cs2.setAlignment(CellStyle.ALIGN_LEFT);
+        cs2.setFillPattern(HSSFCellStyle.SOLID_FOREGROUND);
+        defaultFont = wb.createFont();
+        defaultFont.setFontHeightInPoints((short)10);
+        defaultFont.setFontName("Garamond");
+        defaultFont.setColor(IndexedColors.BLACK.getIndex());
+        defaultFont.setBold(false);
+        defaultFont.setItalic(false);
+        cs.setFont(defaultFont);
+
+        //New Sheet
+        Sheet sheet1 = null;
+        sheet1 = wb.createSheet("Salidas");
+
+        // Generate column headings
+        Row row = sheet1.createRow(0);
+
+        c = row.createCell(0);
+        c.setCellValue("Insumo");
+        c.setCellStyle(cs);
+
+        c = row.createCell(1);
+        c.setCellValue("Lote");
+        c.setCellStyle(cs);
+
+        c = row.createCell(2);
+        c.setCellValue("Cantidad");
+        c.setCellStyle(cs);
+
+        c = row.createCell(3);
+        c.setCellValue("Fecha");
+        c.setCellStyle(cs);
+
+        sheet1.setColumnWidth(0, (15 * 500));
+        sheet1.setColumnWidth(1, (15 * 500));
+        sheet1.setColumnWidth(2, (15 * 500));
+        sheet1.setColumnWidth(3, (15 * 500));
+
+        ArrayList<Salida> salidas = usersDB.toStringSalidas();
+
+        for (int i = 0; i < salidas.size(); i++) {
+            Salida salida = salidas.get(i);
+
+            row = sheet1.createRow(i + 1);
+
+            c = row.createCell(0);
+            c.setCellValue(salida.getInsumo());
+            c.setCellStyle(cs2);
+
+            c = row.createCell(1);
+            c.setCellValue(salida.getLote());
+            c.setCellStyle(cs2);
+
+            c = row.createCell(2);
+            c.setCellValue(salida.getCantidad());
+            c.setCellStyle(cs2);
+
+            c = row.createCell(3);
+            c.setCellValue(salida.getFecha());
+            c.setCellStyle(cs2);
+
+            sheet1.setColumnWidth(0, (15 * 500));
+            sheet1.setColumnWidth(1, (15 * 500));
+            sheet1.setColumnWidth(2, (15 * 500));
+            sheet1.setColumnWidth(3, (15 * 500));
+        }
+
+        // Create a path where we will place our List of objects on external storage
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS), fileName);
+        FileOutputStream os = null;
+
+        try {
+            os = new FileOutputStream(file);
+            wb.write(os);
+            success = true;
+        }
+        catch (Exception e) {
+            Toast.makeText(context, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+        finally {
+            try {
+                if (null != os)
+                    os.close();
+            }
+            catch (Exception ex) { }
+        }
+
+        return success;
+    }
+
+    public static boolean isExternalStorageAvailable() {
+        String extStorageState = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(extStorageState)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isExternalStorageReadOnly() {
+        String extStorageState = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(extStorageState)) {
+            return true;
+        }
+        return false;
+    }
 }
-
-                /*final EditText input = new EditText(Administrador_Activity.this);
-                input.setGravity(Gravity.CENTER_HORIZONTAL);
-                input.setInputType(InputType.TYPE_CLASS_TEXT);
-                input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(30)}); // Max Length 20 Characters
-
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                alertDialog.setView(input);*/
-
-                /*alertDialog.setPositiveButton("Adicionar",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                //String proveedor = input.getText().toString();
-                                // Add proveedor to DB
-                            }
-                        });
-
-                alertDialog.setNegativeButton("Cancelar",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });*/
-
-/*AlertDialog.Builder alertDialog = new AlertDialog.Builder(Administrador_Activity.this);
-                alertDialog.setTitle("LOTES A ADICIONAR");
-                alertDialog.setMessage("Inserte la cantidad de lotes");
-
-                final EditText input = new EditText(Administrador_Activity.this);
-                input.setGravity(Gravity.CENTER_HORIZONTAL);
-                input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(4)}); // Max Length 4 Characters
-
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                input.setLayoutParams(lp);
-                alertDialog.setView(input);
-                //alertDialog.setIcon(R.drawable.key);
-
-                alertDialog.setPositiveButton("Adicionar",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                int lote = Integer.valueOf(input.getText().toString());
-                                // Add lote to DB
-                                dialog.cancel();
-                            }
-                        });
-
-                alertDialog.setNegativeButton("Cancelar",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        });
-
-                alertDialog.show();
-                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(Administrador_Activity.this);
-                LayoutInflater inflater = Administrador_Activity.this.getLayoutInflater();
-                View dialogView = inflater.inflate(R.layout.activity_proveedor_layout, null);
-                dialogBuilder.setView(dialogView);
-
-                AlertDialog alertDialog = dialogBuilder.create();
-                alertDialog.show();
-                v.invalidate();*/
-
-
-    /*AlertDialog.Builder alertDialog = new AlertDialog.Builder(Administrador_Activity.this);
-alertDialog.setTitle("INSUMO A ADICIONAR");
-        alertDialog.setMessage("Escriba el nombre del insumo");
-
-final EditText input = new EditText(Administrador_Activity.this);
-        input.setGravity(Gravity.CENTER_HORIZONTAL);
-        input.setInputType(InputType.TYPE_CLASS_TEXT);
-        input.setFilters(new InputFilter[] {new InputFilter.LengthFilter(30)}); // Max Length 20 Characters
-
-final Spinner spinner = new Spinner(Administrador_Activity.this);
-
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-        LinearLayout.LayoutParams.MATCH_PARENT,
-        LinearLayout.LayoutParams.MATCH_PARENT);
-
-        LinearLayout linearSp = new LinearLayout(Administrador_Activity.this);
-        linearSp.setBackgroundResource(R.drawable.border_file);
-        linearSp.addView(spinner);
-
-        spinner.setLayoutParams(lp);
-        input.setLayoutParams(lp);
-
-        LinearLayout linearGeneral = new LinearLayout(Administrador_Activity.this);
-        linearGeneral.setOrientation(LinearLayout.VERTICAL);
-        linearGeneral.addView(input);
-        linearGeneral.addView(linearSp);
-
-        alertDialog.setView(linearGeneral);
-        //alertDialog.setIcon(R.drawable.key);
-
-        alertDialog.setPositiveButton("Adicionar",
-        new DialogInterface.OnClickListener() {
-public void onClick(DialogInterface dialog, int which) {
-        String proveedor = input.getText().toString();
-        // TODO: Add insumo to DB
-        dialog.cancel();
-        }
-        });
-
-        alertDialog.setNegativeButton("Cancelar",
-        new DialogInterface.OnClickListener() {
-public void onClick(DialogInterface dialog, int which) {
-        dialog.cancel();
-        }
-        });
-
-        alertDialog.show();*/

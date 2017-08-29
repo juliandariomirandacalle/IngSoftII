@@ -69,7 +69,20 @@ public class Entradas_Activity extends AppCompatActivity {
         btnEnviarEntradas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO:Registrar las entradas en la DB
+                int cantidad = Integer.valueOf(edtxt_cantidad_admin.getText().toString().trim());
+                String insumo = String.valueOf(spinner_insumo_admin.getSelectedItem());
+                String proveedor = String.valueOf(spinner_proveedores_admin.getSelectedItem());
+                String fecha = String.valueOf(System.currentTimeMillis());
+
+                try {
+
+                    usersDB.insertarEntrada(cantidad, fecha, usersDB.consultarInsumo(new Insumo(insumo)),
+                            usersDB.consultarProveedor(new Proveedor(proveedor)));
+                    usersDB.updateCantidadInsumo(insumo, (usersDB.getCantidadInsumo(insumo) + cantidad));
+                    Toast.makeText(context, "Insumo Actualizado con éxito!", Toast.LENGTH_SHORT).show();
+                } catch(Exception e){
+                    Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         });
 

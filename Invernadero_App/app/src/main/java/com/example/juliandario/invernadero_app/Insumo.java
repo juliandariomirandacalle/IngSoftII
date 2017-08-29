@@ -10,6 +10,10 @@ public class Insumo {
     private String nombre;
     private int cantidad;
 
+    Insumo(String nombre){
+        this.nombre = nombre;
+    }
+
     Insumo(String nombre, int cantidad){
         this.nombre = nombre;
         this.cantidad = cantidad;

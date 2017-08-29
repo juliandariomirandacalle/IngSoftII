@@ -208,10 +208,37 @@ public class UserDBHelper extends SQLiteOpenHelper {
         if(cursor.getCount() >= 1) {
             while (cursor.moveToNext())
                 salida = Integer.valueOf(cursor.getString(cursor.getColumnIndex(UserContract.InsumoEntry._ID)));
-            return salida;
         }
-        else
-            return -1;
+        return salida;
+    }
+
+    public String consultarInsumo(String id_insumo){
+        SQLiteDatabase db = getWritableDatabase();
+        String salida = "";
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + UserContract.InsumoEntry.TABLE_NAME_INSUMOS
+                + " WHERE _ID LIKE ?", new String [] {id_insumo});
+
+        if(cursor.getCount() >= 1) {
+            while (cursor.moveToNext())
+                salida = cursor.getString(cursor.getColumnIndex(UserContract.InsumoEntry.NOMBRE));
+        }
+        return salida;
+    }
+
+    public int getCantidadInsumo(String insumo){
+        SQLiteDatabase db = getWritableDatabase();
+        int salida = -1;
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + UserContract.InsumoEntry.TABLE_NAME_INSUMOS
+                + " WHERE NOMBRE LIKE ?", new String [] {insumo.trim()});
+
+        if(cursor.getCount() >= 1) {
+            while (cursor.moveToNext())
+                salida = Integer.valueOf(cursor.getString(cursor.getColumnIndex(UserContract.InsumoEntry.CANTIDAD)));
+        }
+
+        return salida;
     }
 
     public boolean insertarInsumo(Insumo insumo){
@@ -240,6 +267,14 @@ public class UserDBHelper extends SQLiteOpenHelper {
                 valid = insertarInsumoProveedor(id_insumo, consultarProveedor(proveedor));
         }
         return valid;
+    }
+
+    public void updateCantidadInsumo(String insumo, int cantidad) throws Exception{
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.execSQL("UPDATE " + UserContract.InsumoEntry.TABLE_NAME_INSUMOS + " SET " +
+                UserContract.InsumoEntry.CANTIDAD + " = " + "'" + cantidad + "'"  + " WHERE " +
+                UserContract.InsumoEntry.NOMBRE + " = '" + insumo + "'");
     }
 
     public String[] insumosList(){
@@ -379,8 +414,24 @@ public class UserDBHelper extends SQLiteOpenHelper {
                 salida = Integer.valueOf(cursor.getString(cursor.getColumnIndex(UserContract.ProveedorEntry._ID)));
             return salida;
         }
-        else
-            return -1;
+
+        return salida;
+    }
+
+    public String consultarProveedor(String id_proveedor){
+        SQLiteDatabase db = getWritableDatabase();
+        String salida = "";
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + UserContract.ProveedorEntry.TABLE_NAME_PROVEEDORES
+                + " WHERE _ID LIKE ?", new String [] {id_proveedor});
+
+        if(cursor.getCount() >= 1) {
+            while (cursor.moveToNext())
+                salida = cursor.getString(cursor.getColumnIndex(UserContract.ProveedorEntry.NOMBRE));
+            return salida;
+        }
+
+        return salida;
     }
 
     public String[] proveedoresList(){
@@ -456,6 +507,38 @@ public class UserDBHelper extends SQLiteOpenHelper {
         return lotes;
     }
 
+    public int consultarLote(String lote){
+        SQLiteDatabase db = getWritableDatabase();
+        int salida = -1;
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + UserContract.LoteEntry.TABLE_NAME_LOTES
+                + " WHERE NOMBRE LIKE ?", new String [] {lote.trim()});
+
+        if(cursor.getCount() >= 1) {
+            while (cursor.moveToNext())
+                salida = Integer.valueOf(cursor.getString(cursor.getColumnIndex(UserContract.LoteEntry._ID)));
+            return salida;
+        }
+
+        return salida;
+    }
+
+    public String consultarLoteNombre(String id_lote){
+        SQLiteDatabase db = getWritableDatabase();
+        String salida = "";
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + UserContract.LoteEntry.TABLE_NAME_LOTES
+                + " WHERE _ID LIKE ?", new String [] {id_lote});
+
+        if(cursor.getCount() >= 1) {
+            while (cursor.moveToNext())
+                salida = cursor.getString(cursor.getColumnIndex(UserContract.LoteEntry.NOMBRE));
+            return salida;
+        }
+
+        return salida;
+    }
+
     public int cantidadLotes(){
         SQLiteDatabase db = getWritableDatabase();
         return db.rawQuery("SELECT * FROM " + UserContract.LoteEntry.TABLE_NAME_LOTES, null).getCount();
@@ -473,6 +556,33 @@ public class UserDBHelper extends SQLiteOpenHelper {
         return salida;
     }
 
+    // TODO: ENTRADAS
+
+    public void insertarEntrada(int cantidad, String fecha, int id_insumo, int id_proveedor) throws Exception{
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.execSQL("INSERT INTO " + UserContract.EntradaEntry.TABLE_NAME_ENTRADAS
+                + "(" + UserContract.EntradaEntry.CANTIDAD + ","
+                + UserContract.EntradaEntry.FECHA + "," + UserContract.EntradaEntry.ID_INSUMO + ","
+                + UserContract.EntradaEntry.ID_PROVEEDOR + ") VALUES ('"
+                + cantidad + "','" + fecha + "'," + id_insumo + "," + id_proveedor + ")");
+    }
+
+    public ArrayList<Entrada> toStringEntradas(){
+        SQLiteDatabase db = getWritableDatabase();
+        ArrayList<Entrada> salida = new ArrayList<Entrada>();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + UserContract.EntradaEntry.TABLE_NAME_ENTRADAS, null);
+        while (cursor.moveToNext()) {
+            Entrada entrada = new Entrada(this.consultarInsumo(cursor.getString(cursor.getColumnIndex(UserContract.EntradaEntry.ID_INSUMO))),
+                    this.consultarProveedor(cursor.getString(cursor.getColumnIndex(UserContract.EntradaEntry.ID_PROVEEDOR))),
+                    Integer.valueOf(cursor.getString(cursor.getColumnIndex(UserContract.EntradaEntry.CANTIDAD))),
+                    this.millisToDate(Long.valueOf(cursor.getString(cursor.getColumnIndex(UserContract.EntradaEntry.FECHA)))));
+            salida.add(entrada);
+        }
+        return salida;
+    }
+
     public String millisToDate(Long timeInMillis){
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeInMillis);
@@ -480,6 +590,33 @@ public class UserDBHelper extends SQLiteOpenHelper {
         return calendar.get(Calendar.DAY_OF_MONTH) + "/" + calendar.get(Calendar.MONTH) + "/" +
                 calendar.get(Calendar.YEAR) + "_" + calendar.get(Calendar.HOUR_OF_DAY) + ":" +
                 calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND);
+    }
+
+    // TODO: SALIDAS
+
+    public void insertarSalida(int cantidad, String fecha, int id_insumo, int id_lote) throws Exception{
+        SQLiteDatabase db = getWritableDatabase();
+
+        db.execSQL("INSERT INTO " + UserContract.SalidaEntry.TABLE_NAME_SALIDAS
+                + "(" + UserContract.SalidaEntry.CANTIDAD + ","
+                + UserContract.SalidaEntry.FECHA + "," + UserContract.EntradaEntry.ID_INSUMO + ","
+                + UserContract.SalidaEntry.ID_LOTE + ") VALUES ('"
+                + cantidad + "','" + fecha + "'," + id_insumo + "," + id_lote + ")");
+    }
+
+    public ArrayList<Salida> toStringSalidas(){
+        SQLiteDatabase db = getWritableDatabase();
+        ArrayList<Salida> salidas = new ArrayList<Salida>();
+
+        Cursor cursor = db.rawQuery("SELECT * FROM " + UserContract.SalidaEntry.TABLE_NAME_SALIDAS, null);
+        while (cursor.moveToNext()) {
+            Salida salida = new Salida(this.consultarInsumo(cursor.getString(cursor.getColumnIndex(UserContract.SalidaEntry.ID_INSUMO))),
+                    this.consultarLoteNombre(cursor.getString(cursor.getColumnIndex(UserContract.SalidaEntry.ID_LOTE))),
+                    Integer.valueOf(cursor.getString(cursor.getColumnIndex(UserContract.SalidaEntry.CANTIDAD))),
+                    this.millisToDate(Long.valueOf(cursor.getString(cursor.getColumnIndex(UserContract.SalidaEntry.FECHA)))));
+            salidas.add(salida);
+        }
+        return salidas;
     }
 
     /*public String consultarUsuario(){

@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,12 +22,15 @@ public class Operario_Activity extends AppCompatActivity {
 
     Spinner spinner_insumo_op, spinner_lotes_op;
     EditText edtxt_fecha_op, edtxt_cantidad_op;
+    TextView txtVwCantidad;
     Button btnEnviarOp, btnRegresarOp;
     Context context = Operario_Activity.this;
     UserDBHelper usersDB;
     TimerTask timerTask;
     Timer timer;
     String[] insumosList, lotesList;
+    String nombreInsumo;
+    int cantidadInsumo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +52,42 @@ public class Operario_Activity extends AppCompatActivity {
         edtxt_cantidad_op = (EditText) findViewById(R.id.edtxt_cantidad_op);
         btnEnviarOp = (Button) findViewById(R.id.btnEnviarOp);
         btnRegresarOp = (Button) findViewById(R.id.btnRegresarOp);
+        txtVwCantidad = (TextView) findViewById(R.id.txtVwCantidad);
 
         edtxt_fecha_op.setEnabled(false);
         iniciarTimerFecha();
 
+        spinner_insumo_op.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+
+                nombreInsumo = String.valueOf(parent.getItemAtPosition(pos));
+                cantidadInsumo = usersDB.getCantidadInsumo(nombreInsumo);
+                txtVwCantidad.setText("Cantidad disponible: " + cantidadInsumo + " Kg");
+            }
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         btnEnviarOp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO:Registrar las salidas en la DB
+                int cantidad = Integer.valueOf(edtxt_cantidad_op.getText().toString().trim());
+                String insumo = String.valueOf(spinner_insumo_op.getSelectedItem());
+                String lote = String.valueOf(spinner_lotes_op.getSelectedItem());
+                String fecha = String.valueOf(System.currentTimeMillis());
+
+                try {
+                    if(cantidad <= cantidadInsumo) {
+                        usersDB.insertarSalida(cantidad, fecha, usersDB.consultarInsumo(new Insumo(insumo)),
+                                usersDB.consultarLote(lote));
+                        usersDB.updateCantidadInsumo(insumo, (usersDB.getCantidadInsumo(insumo) - cantidad));
+                        Toast.makeText(context, "Insumo Actualizado con éxito!", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                        edtxt_cantidad_op.setError("La cantidad supera el inventario de " + insumo);
+                }
+                catch(Exception e){ Toast.makeText(context, e.getMessage(), Toast.LENGTH_LONG).show(); }
             }
         });
 
